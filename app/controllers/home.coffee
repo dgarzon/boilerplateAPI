@@ -9,4 +9,4 @@ router.get '/', (req, res, next) ->
   res.status = 200
   res.send
     data:
-      message: 'Working..'
+      message: ''
