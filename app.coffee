@@ -1,3 +1,8 @@
+require 'coffee-script/register'
+
+global.localRequire = (name) ->
+  return require(__dirname + '/' + name)
+
 express = require 'express'
 config = require './config/config'
 glob = require 'glob'

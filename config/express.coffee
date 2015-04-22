@@ -23,6 +23,8 @@ module.exports = (app, config) ->
   app.use methodOverride()
 
   controllers = glob.sync config.root + '/app/controllers/**/*.coffee'
+  controllers.shift()
+  
   controllers.forEach (controller) ->
     require(controller)(app)
 
