@@ -14,7 +14,7 @@ db = mongoose.connection
 db.on 'error', ->
   console.log(
     chalk.red('[DB Error]: ') +
-      chalk.dim('Unable to connect to database at ' + config.db)
+    chalk.dim('Unable to connect to database at ' + config.db)
   )
   return
 

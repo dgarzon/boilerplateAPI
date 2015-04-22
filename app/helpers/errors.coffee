@@ -20,5 +20,8 @@ class Errors
     err.status = 500
     return err
 
+  queueEmpty: () ->
+    err = new Error '[SQS Error]: Queue is empty.'
+
 
 module.exports = new Errors()
