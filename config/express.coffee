@@ -6,6 +6,7 @@ cookieParser = require 'cookie-parser'
 bodyParser = require 'body-parser'
 compress = require 'compression'
 methodOverride = require 'method-override'
+headerOverride = localRequire 'app/middlewares/logging/override'
 
 module.exports = (app, config) ->
   env = process.env.NODE_ENV || 'development'
@@ -13,6 +14,7 @@ module.exports = (app, config) ->
   app.locals.ENV_DEVELOPMENT = env == 'development'
 
   app.use logger 'dev'
+  app.use headerOverride()
   app.use bodyParser.json()
   app.use bodyParser.urlencoded(
     extended: true
@@ -24,7 +26,7 @@ module.exports = (app, config) ->
 
   controllers = glob.sync config.root + '/app/controllers/**/*.coffee'
   controllers.shift()
-  
+
   controllers.forEach (controller) ->
     require(controller)(app)
 

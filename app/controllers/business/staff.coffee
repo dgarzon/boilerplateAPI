@@ -8,6 +8,8 @@ baseUrl = '/api/v1/staff'
 service = localRequire 'app/services/business/staff'
 controller = (localRequire 'app/controllers/_base/')(service)
 
+logging = localRequire 'app/middlewares/logging/'
+
 module.exports = (app) ->
   app.use baseUrl, router
 

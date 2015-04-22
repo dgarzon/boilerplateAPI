@@ -6,8 +6,8 @@ validator = require 'express-validator'
 pluralize = require 'pluralize'
 url = require 'url'
 
-errors = localRequire 'app/helpers/errors'
-utils = localRequire 'app/helpers/utils'
+errors = localRequire 'app/helpers/utils/errors'
+utils = localRequire 'app/helpers/utils/'
 
 class BaseService
 
