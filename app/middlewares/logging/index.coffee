@@ -8,10 +8,9 @@ class Logging
       'http://1a60cd5.ngrok.com/api/v1/logging', 'http')
     @SNS.init()
 
-  before: () ->
+  before: (req, res, next) ->
 
-  after: () ->
-
+  after: (req, res, next) ->
 
 module.exports =
   new Logging()

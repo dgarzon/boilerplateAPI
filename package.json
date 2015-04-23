@@ -21,7 +21,8 @@
     "mongoose": "~3.8.20",
     "morgan": "~1.5.0",
     "pluralize": "^1.1.2",
-    "q": "^1.2.0"
+    "q": "^1.2.0",
+    "vogels": "^2.0.0-rc9"
   },
   "devDependencies": {
     "coffee-script": "~1.9.1",
