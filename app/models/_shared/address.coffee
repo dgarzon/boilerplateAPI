@@ -4,6 +4,9 @@ mongoose = require('mongoose')
 Schema = mongoose.Schema
 
 AddressSchema = new Schema(
+  staff:
+    type: Schema.ObjectId
+    ref: 'Staff'
   firstLine:
     type: String
   secondLine:
@@ -33,5 +36,22 @@ AddressSchema.pre 'save', (next) ->
     @createdAt = now
   next()
   return
+
+AddressSchema.post 'save', () ->
+  @model('Staff').findByIdAndUpdate @staff, { $push: addresses: @_id }, {
+    safe: true
+    upsert: true
+  }, (err, model) ->
+    if err
+      console.log err
+
+AddressSchema.pre 'remove', (next) ->
+  @model('Staff').findByIdAndUpdate @staff, { $pull: addresses: @_id }, {
+    safe: true
+    upsert: true
+  }, (err, model) ->
+    if err
+      console.log err
+    next()
 
 mongoose.model 'Address', AddressSchema

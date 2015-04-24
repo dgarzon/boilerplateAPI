@@ -3,6 +3,7 @@ async = require 'async'
 chalk = require 'chalk'
 
 class SNS
+  @_instance = null
 
   constructor: (@name, @endpoint, @protocol) ->
     @notifier = new AWS.SNS(
@@ -13,6 +14,12 @@ class SNS
       Protocol: @protocol
       Endpoint: @endpoint
     @confirmed = false
+
+  @get: (name, endpoint, protocol) ->
+    if not @_instance?
+      @_instance = new @(name, endpoint, protocol)
+      @_instance.init()
+    @_instance
 
   startProcess = () ->
     (next) ->
@@ -27,16 +34,16 @@ class SNS
     @notifier.createTopic params, (err, data) ->
       if err
         console.log(
-          chalk.red('[SNS Error]: ') +
-          chalk.dim('Failed to create new ' + _this.name + ' topic')
+          chalk.red('[SNS]: ') +
+          chalk.dim('Failed to create new ' + _this.name + ' topic.')
         )
         callback(err)
         return
       else
         _this.params.TopicArn = data.TopicArn
         console.log(
-          chalk.green('[SNS Success]: ') +
-          chalk.dim('Created new ' + _this.name + ' topic')
+          chalk.magenta('[SNS]: ') +
+          chalk.dim('Created new ' + _this.name + ' topic.')
         )
         callback(null)
         return
@@ -47,15 +54,15 @@ class SNS
     @notifier.subscribe params, (err, data) ->
       if err
         console.log(
-          chalk.red('[SNS Error]: ') +
-          chalk.dim('Failed to subscribe to new topic')
+          chalk.red('[SNS]: ') +
+          chalk.dim('Failed to subscribe to topic.')
         )
         callback(err)
         return
       else
         console.log(
-          chalk.green('[SNS Success]: ') +
-          chalk.dim('Subscribed to new topic')
+          chalk.magenta('[SNS]: ') +
+          chalk.dim('Subscribed to topic.')
         )
         callback(null)
         return
@@ -78,15 +85,15 @@ class SNS
     @notifier.confirmSubscription params, (err, data) ->
       if err
         console.log(
-          chalk.red('[SNS Error]: ') +
-          chalk.dim('Failed to confirm subscription to topic')
+          chalk.red('[SNS]: ') +
+          chalk.dim('Failed to confirm subscription to topic.')
         )
         callback(err)
         return
       else
         console.log(
-          chalk.green('[SNS Success]: ') +
-          chalk.dim('Confirmed subscription to topic')
+          chalk.magenta('[SNS]: ') +
+          chalk.dim('Confirmed subscription to topic.')
         )
         _confirmed = true
         callback(null, data)
@@ -94,5 +101,5 @@ class SNS
 
   publish: (message) ->
 
-module.exports = (topic, endpoint, protocol) ->
-  new SNS(topic, endpoint, protocol)
+module.exports = (topic=null, endpoint=null, protocol=null) ->
+  SNS.get(topic, endpoint, protocol)

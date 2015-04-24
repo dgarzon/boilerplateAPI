@@ -1,14 +1,15 @@
 express  = require 'express'
 router = express.Router()
 
-logging = localRequire 'app/middlewares/logging/'
+base = '/api/v1/logging'
+SNS = (localRequire 'app/helpers/aws/sns')()
 
 module.exports = (app) ->
-  app.use '/api/v1/logging', router
+  app.use router
 
-router.post '/', (req, res, next) ->
-  if req.body.Type == 'SubscriptionConfirmation' and not logging.confirmed
-    logging.SNS.confirm req.body.Token, (err, data) ->
+router.post base + '/', (req, res, next) ->
+  if req.body.Type == 'SubscriptionConfirmation' and not SNS.confirmed
+    SNS.confirm req.body.Token, (err, data) ->
       if err
         next(err)
       else

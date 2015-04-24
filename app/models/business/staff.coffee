@@ -8,7 +8,7 @@ BaseSchema = localRequire 'app/models/_base/'
 StaffSchema = new BaseSchema(
   role:
     type: String
-    default: 'staff'
+    default: 'employee'
 )
 
 User  = mongoose.model 'User'

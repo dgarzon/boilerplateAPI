@@ -43,9 +43,10 @@ BaseSchema = ->
         type: String
         required: true
 
-    address:
+    addresses: [
       type: Schema.ObjectId
       ref: 'Address'
+    ]
     email:
       type: String
       required: true

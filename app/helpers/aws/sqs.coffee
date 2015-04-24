@@ -4,6 +4,7 @@ chalk = require 'chalk'
 errors = localRequire 'app/helpers/utils/errors'
 
 class SQS
+  @_instance = null
 
   constructor: (@name) ->
     @queue = new AWS.SQS(
@@ -15,6 +16,12 @@ class SQS
     @getMessage = Q.nbind(@queue.receiveMessage, @queue)
     @deleteMessage = Q.nbind(@queue.deleteMessage, @queue)
 
+  @get: (name) ->
+    if not @_instance?
+      @_instance = new @(name)
+      @_instance.create()
+    @_instance
+
   create: () ->
     _this = @
 
@@ -24,15 +31,15 @@ class SQS
     @queue.createQueue params, (err, data) ->
       if err
         console.log(
-          chalk.red('[SQS Error]: ') +
-          chalk.dim('Failed to create new ' + _this.name + ' queue')
+          chalk.red('[SQS]: ') +
+          chalk.dim('Failed to create new ' + _this.name + ' queue.')
         )
         return
       else
         _this.information.QueueUrl = data.QueueUrl
         console.log(
-          chalk.green('[SQS Success]: ') +
-          chalk.dim('Created new ' + _this.name + ' queue')
+          chalk.yellow('[SQS]: ') +
+          chalk.dim('Created new ' + _this.name + ' queue.')
         )
         return
 
@@ -82,13 +89,13 @@ class SQS
           throw workflowError 'QueueEmpty', new Error('Queue is empty')
 
         console.log(
-          chalk.green('[SQS Message]: ') +
-          chalk.dim('Received message from queue')
+          chalk.yellow('[SQS]: ') +
+          chalk.dim('Received message from queue.')
         )
         body = JSON.parse(data.Messages[0].Body)
 
         console.log(
-          chalk.magenta('[SQS Message]: ') +
+          chalk.yellow('[SQS]: ') +
           chalk.dim(body)
         )
 
@@ -97,23 +104,23 @@ class SQS
         return
       .then (data) ->
         console.log(
-          chalk.yellow('[SQS Message]: ') +
+          chalk.yellow('[SQS]: ') +
           chalk.dim('Deleted last message from queue')
         )
       .catch (err) ->
         switch err.type
           when 'QueueEmpty'
             console.log(
-              chalk.red('[SQS Error]: ') +
+              chalk.red('[SQS]: ') +
               chalk.dim(err.message)
             )
           else
             console.log(
-              chalk.red('[SQS Error]: ') +
+              chalk.red('[SQS]: ') +
               chalk.dim(err)
             )
       .finally poll
       return
 
-module.exports = (name) ->
-  new SQS(name)
+module.exports = (name=null) ->
+  SQS.get(name)

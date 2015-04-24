@@ -82,7 +82,7 @@ class BaseService
 
   modelQuery = (model, query, pagination, path, callback) ->
     scanner = model
-    scanner = scanner.find({})
+    scanner = scanner.find(query.condition)
     if query.q
       scanner = scanner.where(query.q)
     if query.sort
@@ -201,6 +201,8 @@ class BaseService
 
     if path.base.charAt(path.base.length - 1) == '/'
       path.base = path.base.substring(0, path.base.length - 1)
+
+    req.query.condition = {}
 
     async.waterfall [
       startQueryProcess(@base.model, @base.fields,
@@ -329,14 +331,135 @@ class BaseService
       processDelete
     ], callback
 
+  getSubKey = (base, relationship) ->
+    modelName = base.model.modelName
+    paths = relationship.model.schema.paths
+    path =
+      _.pick(paths, (item) ->
+        type = _.capitalize utils.getFunctionName(item.options.type)
+        return type == 'ObjectId' and item.options.ref == modelName
+      )
+
+    path = _.keys(path)[0]
+
+    return path
+
   listSub: (req, name, callback) ->
+    hostName = req.headers.host
+    pathName = url.parse(req.originalUrl).pathname
+
+    path =
+      base: 'http://' + hostName + pathName
+
+    if path.base.charAt(path.base.length - 1) == '/'
+      path.base = path.base.substring(0, path.base.length - 1)
+
+    relationship = null
+    key = null
+    for r in @base.relationships
+      if r.name == _.capitalize(name)
+        relationship = r
+        key = getSubKey(@base, relationship)
+        break
+
+    req.query.condition = {}
+    req.query['condition'][key] = req.params.id
+
+    async.waterfall [
+      startQueryProcess(relationship.model, relationship.fields,
+                        req.query, @options.relationships.pagination, path)
+      parseQuery
+      validateQuery
+      modelQuery
+      processQuery
+      paginateQuery
+      sanitize
+    ], callback
 
   getSub: (req, name, callback) ->
+    hostName = req.headers.host
+    pathName = url.parse(req.originalUrl).pathname
+
+    path =
+      base: 'http://' + hostName + pathName
+
+    if path.base.charAt(path.base.length - 1) == '/'
+      path.base = path.base.substring(0, path.base.length - 1)
+
+    relationship = null
+
+    for r in @base.relationships
+      if r.name == _.capitalize(name)
+        relationship = r
+        break
+
+    async.waterfall [
+      startGetProcess(relationship.model, req.params.subId, path)
+      processGet
+      sanitize
+    ], callback
 
   createSub: (req, name, callback) ->
+    hostName = req.headers.host
+    pathName = url.parse(req.originalUrl).pathname
+
+    path =
+      base: 'http://' + hostName + pathName
+
+    if path.base.charAt(path.base.length - 1) == '/'
+      path.base = path.base.substring(0, path.base.length - 1)
+
+    relationship = null
+    key = null
+    for r in @base.relationships
+      if r.name == _.capitalize(name)
+        relationship = r
+        key = getSubKey(@base, relationship)
+        break
+
+    req.body[key] = req.params.id
+
+    async.waterfall [
+      startCreateProcess(relationship.model, req.body, path)
+      processCreate
+      sanitize
+    ], callback
 
   updateSub: (req, name, callback) ->
+    hostName = req.headers.host
+    pathName = url.parse(req.originalUrl).pathname
+
+    path =
+      base: 'http://' + hostName + pathName
+
+    if path.base.charAt(path.base.length - 1) == '/'
+      path.base = path.base.substring(0, path.base.length - 1)
+
+    relationship = null
+
+    for r in @base.relationships
+      if r.name == _.capitalize(name)
+        relationship = r
+        break
+
+    async.waterfall [
+      startUpdateProcess(relationship.model, req.body, path)
+      processUpdate
+      sanitize
+    ], callback
 
   deleteSub: (req, name, callback) ->
+    relationship = null
+
+    for r in @base.relationships
+      if r.name == _.capitalize(name)
+        relationship = r
+        break
+
+    async.waterfall [
+      startDeleteProcess(relationship.model, req.params.subId)
+      processDelete
+    ], callback
+
 
 module.exports = BaseService
