@@ -4,7 +4,7 @@ express  = require 'express'
 router = express.Router()
 paginate = require 'express-paginate'
 
-base = '/api/v1/staff'
+base = '/api/v1/store'
 service = localRequire 'app/services/business/store'
 controller = (localRequire 'app/controllers/_base/')(service)
 
