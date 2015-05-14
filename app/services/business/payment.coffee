@@ -1,12 +1,9 @@
 mongoose = require 'mongoose'
 
 BaseService = localRequire 'app/services/_base/'
-Staff = mongoose.model 'Staff'
-Address = mongoose.model 'Address'
 Payment = mongoose.model 'Payment'
-Rental = mongoose.model 'Rental'
 
-class StaffService extends BaseService
+class PaymentService extends BaseService
 
 options = {
   query:
@@ -24,7 +21,4 @@ options = {
 }
 
 module.exports =
-  new StaffService(
-    Staff,
-    [Address, Payment, Rental],
-    options)
+  new PaymentService(Payment, [], options)

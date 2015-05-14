@@ -71,7 +71,5 @@ BaseSchema = ->
       type: Date
   return
 
-
-
 util.inherits BaseSchema, Schema
 module.exports = BaseSchema

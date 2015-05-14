@@ -1,7 +1,7 @@
 mongoose = require 'mongoose'
 
 BaseService = localRequire 'app/services/_base/'
-Staff = mongoose.model 'Staff'
+Customer = mongoose.model 'Customer'
 Address = mongoose.model 'Address'
 Payment = mongoose.model 'Payment'
 Rental = mongoose.model 'Rental'
@@ -25,6 +25,6 @@ options = {
 
 module.exports =
   new StaffService(
-    Staff,
+    Customer,
     [Address, Payment, Rental],
     options)
