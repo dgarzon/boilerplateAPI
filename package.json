@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "node app.coffee"
+    "start": "gulp",
+    "test": "gulp test"
   },
   "dependencies": {
     "async": "^0.9.0",
