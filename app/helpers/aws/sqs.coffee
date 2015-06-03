@@ -55,6 +55,8 @@ class SQS
         return
 
   get: (callback) ->
+    _this = @
+
     params =
       QueueUrl: @options.url
 
@@ -63,7 +65,8 @@ class SQS
         callback(err)
         return
       else
-        callback(err, data.Messages[0])
+        message = data.Messages[0]
+        callback(err, message)
         return
 
   delete: (handle, callback) ->
@@ -120,5 +123,5 @@ class SQS
       .finally poll
       return
 
-module.exports = (name=null) ->
-  SQS.get(name)
+module.exports = (options=null) ->
+  SQS.get(options)
