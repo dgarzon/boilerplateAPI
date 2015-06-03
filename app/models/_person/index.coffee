@@ -4,7 +4,7 @@ util = require 'util'
 mongoose = require 'mongoose'
 Schema   = mongoose.Schema
 
-BaseSchema = ->
+PersonSchema = ->
   Schema.apply this, arguments
 
   this.virtual('name.full').get ->
@@ -43,23 +43,20 @@ BaseSchema = ->
         type: String
         required: true
 
-    addresses: [
-      type: Schema.ObjectId
-      ref: 'Address'
-    ]
     email:
       type: String
       required: true
-
     username:
       type: String
       # required: true
     password:
       type: String
       # required: true
-    role:
-      type: String
-      # required: true
+
+    addresses: [
+      type: Schema.ObjectId
+      ref: 'Address'
+    ]
 
     active:
       type: Boolean
@@ -71,5 +68,7 @@ BaseSchema = ->
       type: Date
   return
 
-util.inherits BaseSchema, Schema
-module.exports = BaseSchema
+util.inherits PersonSchema, Schema
+mongoose.model 'User', new PersonSchema
+
+module.exports = PersonSchema

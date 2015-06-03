@@ -3,13 +3,8 @@
 mongoose = require 'mongoose'
 Schema   = mongoose.Schema
 
-BaseSchema = localRequire 'app/models/_base/'
-
-StaffSchema = new BaseSchema(
-  role:
-    type: String
-    default: 'employee'
-)
+PersonSchema = localRequire 'app/models/_person/'
+StaffSchema = new PersonSchema()
 
 User  = mongoose.model 'User'
 Staff = User.discriminator 'Staff', StaffSchema

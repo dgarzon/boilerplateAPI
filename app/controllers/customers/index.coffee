@@ -4,8 +4,8 @@ express  = require 'express'
 router = express.Router()
 paginate = require 'express-paginate'
 
-base = '/api/v1/staff'
-service = localRequire 'app/services/business/staff'
+base = '/api/v1/customers'
+service = localRequire 'app/services/_groups/customer'
 controller = (localRequire 'app/controllers/_base/')(service)
 
 logging = localRequire 'app/middlewares/logging/'
@@ -24,15 +24,3 @@ router.get base + '/:id/addresses/:subId', controller.getSub('address')
 router.post base + '/:id/addresses', controller.createSub('address')
 router.put base + '/:id/addresses', controller.updateSub('address')
 router.delete base + '/:id/addresses/:subId', controller.deleteSub('address')
-
-router.get base + '/:id/payments', controller.listSub('payment')
-router.get base + '/:id/payments/:subId', controller.getSub('payment')
-router.post base + '/:id/payments', controller.createSub('payment')
-router.put base + '/:id/payments', controller.updateSub('payment')
-router.delete base + '/:id/payments/:subId', controller.deleteSub('payment')
-
-router.get base + '/:id/store', controller.listSub('store')
-router.get base + '/:id/store/:subId', controller.getSub('store')
-router.post base + '/:id/store', controller.createSub('store')
-router.put base + '/:id/store', controller.updateSub('store')
-router.delete base + '/:id/store/:subId', controller.deleteSub('store')
