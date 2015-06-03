@@ -15,9 +15,9 @@ class SNS
       Endpoint: @options.endpoint
     @confirmed = false
 
-  @get: (name, endpoint, protocol) ->
+  @get: (options) ->
     if not @_instance?
-      @_instance = new @(name, endpoint, protocol)
+      @_instance = new @(options)
       @_instance.init()
     @_instance
 
@@ -35,7 +35,7 @@ class SNS
       if err
         console.log(
           chalk.red('[SNS]: ') +
-          chalk.dim('Failed to create new ' + _this.name + ' topic.')
+          chalk.dim('Failed to create new ' + _this.options.name + ' topic.')
         )
         callback(err)
         return
@@ -43,7 +43,7 @@ class SNS
         _this.params.TopicArn = data.TopicArn
         console.log(
           chalk.magenta('[SNS]: ') +
-          chalk.dim('Created new ' + _this.name + ' topic.')
+          chalk.dim('Created new ' + _this.options.name + ' topic.')
         )
         callback(null)
         return
@@ -101,5 +101,5 @@ class SNS
 
   publish: (message) ->
 
-module.exports = (topic=null, endpoint=null, protocol=null) ->
-  SNS.get(topic, endpoint, protocol)
+module.exports = (options=null) ->
+  SNS.get(options)

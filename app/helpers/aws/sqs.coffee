@@ -7,20 +7,16 @@ class SQS
   @_instance = null
 
   constructor: (@options) ->
-    @name = @options.name
-    
     @queue = new AWS.SQS(
       apiVersion: '2012-11-05'
     )
-    @information =
-      QueueUrl: ''
 
     @getMessage = Q.nbind(@queue.receiveMessage, @queue)
     @deleteMessage = Q.nbind(@queue.deleteMessage, @queue)
 
-  @get: (name) ->
+  @get: (options) ->
     if not @_instance?
-      @_instance = new @(name)
+      @_instance = new @(options)
       @_instance.create()
     @_instance
 
@@ -28,26 +24,26 @@ class SQS
     _this = @
 
     params =
-      QueueName: _this.name
+      QueueName: _this.options.name
 
     @queue.createQueue params, (err, data) ->
       if err
         console.log(
           chalk.red('[SQS]: ') +
-          chalk.dim('Failed to create new ' + _this.name + ' queue.')
+          chalk.dim('Failed to create new ' + _this.options.name + ' queue.')
         )
         return
       else
-        _this.information.QueueUrl = data.QueueUrl
+        _this.options.url = data.QueueUrl
         console.log(
           chalk.yellow('[SQS]: ') +
-          chalk.dim('Created new ' + _this.name + ' queue.')
+          chalk.dim('Created new ' + _this.options.name + ' queue.')
         )
         return
 
   send: (message, callback) ->
     params =
-      QueueUrl: @information.QueueUrl
+      QueueUrl: @options.url
       MessageBody: message
 
     @queue.sendMessage params, (err, data) ->
@@ -60,7 +56,7 @@ class SQS
 
   get: (callback) ->
     params =
-      QueueUrl: @information.QueueUrl
+      QueueUrl: @options.url
 
     @queue.receiveMessage params, (err, data) ->
       if err
@@ -72,7 +68,7 @@ class SQS
 
   delete: (handle, callback) ->
     params =
-      QueueUrl: @information.QueueUrl
+      QueueUrl: @options.url
       ReceiptHandle: handle
 
     @queue.deleteMessage params, (err, data) ->

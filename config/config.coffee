@@ -16,6 +16,7 @@ config =
         protocol: 'http'
       sqs:
         name: 'logging'
+        url: ''
 
   test:
     root: rootPath
@@ -30,6 +31,7 @@ config =
         protocol: 'http'
       sqs:
         name: 'logging'
+        url: ''
 
   production:
     root: rootPath
@@ -44,5 +46,6 @@ config =
         protocol: 'http'
       sqs:
         name: 'logging'
+        url: ''
 
 module.exports = config[env]
