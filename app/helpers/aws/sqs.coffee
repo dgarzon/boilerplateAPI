@@ -6,7 +6,9 @@ errors = localRequire 'app/helpers/utils/errors'
 class SQS
   @_instance = null
 
-  constructor: (@name) ->
+  constructor: (@options) ->
+    @name = @options.name
+    
     @queue = new AWS.SQS(
       apiVersion: '2012-11-05'
     )

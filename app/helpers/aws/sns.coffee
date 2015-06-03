@@ -5,14 +5,14 @@ chalk = require 'chalk'
 class SNS
   @_instance = null
 
-  constructor: (@name, @endpoint, @protocol) ->
+  constructor: (@options) ->
     @notifier = new AWS.SNS(
       apiVersion: '2010-03-31'
     )
     @params =
       TopicArn: ''
-      Protocol: @protocol
-      Endpoint: @endpoint
+      Protocol: @options.protocol
+      Endpoint: @options.endpoint
     @confirmed = false
 
   @get: (name, endpoint, protocol) ->
@@ -29,7 +29,7 @@ class SNS
     _this = @
 
     params =
-      Name: @name
+      Name: @options.name
 
     @notifier.createTopic params, (err, data) ->
       if err

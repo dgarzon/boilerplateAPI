@@ -9,6 +9,13 @@ config =
       name: 'test'
     port: 3000
     db: 'mongodb://localhost/api-development'
+    aws:
+      sns:
+        name: 'logging'
+        endpoint: 'http://2672539b.ngrok.io/api/v1/logging'
+        protocol: 'http'
+      sqs:
+        name: 'logging'
 
   test:
     root: rootPath
@@ -16,6 +23,13 @@ config =
       name: 'test'
     port: 3000
     db: 'mongodb://localhost/api-test'
+    aws:
+      sns:
+        name: 'logging'
+        endpoint: 'http://2672539b.ngrok.io/api/v1/logging'
+        protocol: 'http'
+      sqs:
+        name: 'logging'
 
   production:
     root: rootPath
@@ -23,5 +37,12 @@ config =
       name: 'test'
     port: 3000
     db: 'mongodb://localhost/api-production'
+    aws:
+      sns:
+        name: 'logging'
+        endpoint: 'http://2672539b.ngrok.io/api/v1/logging'
+        protocol: 'http'
+      sqs:
+        name: 'logging'
 
 module.exports = config[env]

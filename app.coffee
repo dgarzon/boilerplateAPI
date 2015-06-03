@@ -25,14 +25,9 @@ models.forEach (model) ->
 
 app = express()
 
-DynamoDB = localRequire 'app/helpers/aws/dynamodb.coffee'
-SNS = (localRequire 'app/helpers/aws/sns')('logging',
-  'http://26c960f9.ngrok.com/api/v1/logging', 'http')
-SQS = (localRequire 'app/helpers/aws/sqs')('logging')
-
+SNS = (localRequire 'app/helpers/aws/sns')(config.aws.sns)
+SQS = (localRequire 'app/helpers/aws/sqs')(config.aws.sqs)
 
 require('./config/express') app, config
 app.listen config.port, () ->
-  localRequire('app/helpers/utils/document')(app._router.stack)
-  DynamoDB.init(app._router.stack)
-  # DynamoDB.seed(app._router.stack)
+  localRequire('app/helpers/utils/routes')(app._router.stack)
